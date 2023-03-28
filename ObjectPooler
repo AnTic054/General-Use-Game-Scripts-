@@ -1,0 +1,82 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ObjectPooler : MonoBehaviour
+{
+    //helper just has some easy functions for getting things like random numbers
+    Helper helper = new Helper();
+
+    [SerializeField]
+    List<GameObject> Pool = new List<GameObject>();
+    [SerializeField]
+    GameObject[] objToPool;
+    [SerializeField]
+    GameObject poolParent;
+
+    public int maxPoolSize = 100;
+    public int initialPoolSize = 20;
+
+    void Awake()
+    {
+         InitializeListSize();
+    }
+    public int ActiveObjCount()
+    {
+        int count = 0;
+        if (Pool != null)
+        {
+
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            if (Pool[i].activeInHierarchy == true)
+            {
+                count += 1;
+            }
+        }
+        }
+        return count;
+    }
+    public GameObject GetObject()
+    {
+        for (int i = 0; i < Pool.Count; i++)
+        {
+            if (Pool[i].activeInHierarchy == false)
+            {
+                //Debug.Log("Found inactive obj. " + "pool size " + Pool.Count);
+                return Pool[i];
+            }
+        }
+        if (Pool.Count >= maxPoolSize)
+        {
+            //Debug.Log("pool at max size " + Pool.Count);
+            return null;
+        }
+         
+        //Debug.Log("couldn't find inactive obj making new obj. " + "new pool size " + Pool.Count);
+        AddToList();
+        return Pool[Pool.Count-1];
+    }
+    void AddToList()
+    {
+        if (Pool.Count < maxPoolSize)
+        {
+            GameObject objFromArray;
+            objFromArray = Instantiate(objToPool[helper.RandomIntGen(0, objToPool.Length)]);
+            Pool.Add(objFromArray);
+
+            //adjust string to set parent for pooled objects here 
+            objFromArray.gameObject.transform.parent = GameObject.Find("AsteroidParentHolder").transform;
+
+            objFromArray.SetActive(false);
+        }
+    }
+    public void InitializeListSize()
+    {
+        //creats pool on game start/pool activation
+        for (int i = 0; i < initialPoolSize; i++)
+        {
+            AddToList();
+        }
+    }
+}
