@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerEventHandler : MonoBehaviour
 {
+    // This script is a basic example of setting up and using C# events
     public static int damageToPlayer;
     public delegate void PlayerDamage(int damage);
     public static event PlayerDamage playerDamaged;
