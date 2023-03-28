@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+//This Camera Manager class is used to follow player smoothly and slightly behind as well as able to
+//adjust Field of View when player moves through the use of C# events
     Helper helper = new Helper();
     [SerializeField]
     Camera cam;
